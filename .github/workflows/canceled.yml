@@ -1,0 +1,64 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Subscription Canceled
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    inputs:
+      # These inputs are required by saas-lifecycle...
+      subscriptionId:
+        description: "The subscription ID."
+        required: true
+      tenantId:
+        description: "The tenant ID."
+        required: true
+      operationId:
+        description: "The operation ID."
+        required: true
+      context:
+        description: "The subscription operation's context provided as a JSON object."
+        required: false
+        default: "{ }" 
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    env:
+      SubscriptionId: ${{ github.event.inputs.subscriptionId }}
+      PlatformName: cawatson02
+      AzureRegion: eastus
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@main
+      
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+       - uses: Azure/CLI@v1
+        with:
+          inlineScript: |
+            #!/bin/bash
+            
+            az keyvault secret delete \
+              --name "club-db-${{ env.SubscriptionId }}" \
+              --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
+              --vault-name "asdk-${{ env.PlatformName }}-secrets"
+              
+            az sql db delete \
+              --name "club-db-${{ env.SubscriptionId }}" \
+              --resource-group "asdk-${{ env.PlatformName }}" \
+              --server "asdk-${{ env.PlatformName }}-sqlserver" \
+              --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
+              --yes
+          
+          
+            
+            
