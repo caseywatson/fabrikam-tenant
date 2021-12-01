@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "platform": {
+      "type": "string"
+    },
+    "sqlServerPassword": {
+      "type": "securestring"
+    },
+    "subscriptionId": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "dbName": "[concat('club-db-', parameters('subscriptionId'))]",
+    "elasticPoolName": "[format('asdk-{0}-pool', toLower(parameters('platform')))]",
+    "keyVaultName": "[format('asdk-{0}-secrets', toLower(parameters('platform')))]",
+    "sqlServerName": "[format('asdk-{0}-sqlserver', toLower(parameters('platform')))]",
+    "dbResourceName": "[format('{0}/{1}', variables('sqlServerName'), variables('dbName'))]",
+    "elasticPoolResourceId": "[resourceId('Microsoft.Sql/servers/elasticpools', variables('sqlServerName'), variables('elasticPoolName'))]",
+    "cxnStringSecretName": "[format('{0}/{1}', variables('keyVaultName'), variables('dbName'))]",
+    "cxnStringFormat": "Server=tcp:{0}.database.windows.net,1433;Initial Catalog={1};Persist Security Info=False;User ID={2};Password={3};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30",
+    "cxnString": "[format(variables('cxnStringFormat'), variables('sqlServerName'), variables('dbName'), toLower(parameters('platform')), parameters('sqlServerPassword'))]",
+    "cxnStringSecret": {
+      "connection_string": "[variables('cxnString')]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "name": "[variables('dbResourceName')]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-02-01-preview",
+      "sku": {
+        "name": "ElasticPool",
+        "tier": "GeneralPurpose",
+        "capacity": 0
+      },
+      "properties": {
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "elasticPoolId": "[variables('elasticPoolResourceId')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2021-06-01-preview",
+      "name": "[variables('cxnStringSecretName')]",
+      "tags": {
+        "subscription_id": "[parameters('subscriptionId')]"
+      },
+      "properties": {
+        "contentType": "application/json",
+        "value": "[string(variables('cxnStringSecret'))]"
+      }
+    }
+  ],
+  "outputs": {}
+}
