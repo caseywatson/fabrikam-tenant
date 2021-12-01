@@ -47,6 +47,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: asdk-${{ env.PlatformName }}
           template: ./new-tenant.json
+          deploymentName: deploy-tenant-${{ env.SubscriptionId }}
           parameters: platform=${{ env.PlatformName }} sqlServerPassword=${{ secrets.SQL_SERVER_PASSWORD }} subscriptionId=${{ env.SubscriptionId }}
           
           
