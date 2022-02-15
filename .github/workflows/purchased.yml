@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       # These inputs are required by saas-lifecycle...
-      subscriptionId:
-        description: "The subscription ID."
-        required: true
       tenantId:
         description: "The tenant ID."
+        required: true
+      subscriptionId:
+        description: "The subscription ID."
         required: true
       operationId:
         description: "The operation ID."
