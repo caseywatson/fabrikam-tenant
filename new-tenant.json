@@ -14,9 +14,9 @@
   },
   "variables": {
     "dbName": "[concat('club-db-', parameters('subscriptionId'))]",
-    "elasticPoolName": "[format('saas-app-{0}-pool', toLower(parameters('platform')))]",
-    "keyVaultName": "[format('saas-app-{0}-secrets', toLower(parameters('platform')))]",
-    "sqlServerName": "[format('saas-app-{0}-sqlserver', toLower(parameters('platform')))]",
+    "elasticPoolName": "[format('saas-{0}-pool', toLower(parameters('platform')))]",
+    "keyVaultName": "[format('saas-{0}-secrets', toLower(parameters('platform')))]",
+    "sqlServerName": "[format('saas-{0}-sqlserver', toLower(parameters('platform')))]",
     "dbResourceName": "[format('{0}/{1}', variables('sqlServerName'), variables('dbName'))]",
     "elasticPoolResourceId": "[resourceId('Microsoft.Sql/servers/elasticpools', variables('sqlServerName'), variables('elasticPoolName'))]",
     "cxnStringSecretName": "[format('{0}/{1}', variables('keyVaultName'), variables('dbName'))]",
