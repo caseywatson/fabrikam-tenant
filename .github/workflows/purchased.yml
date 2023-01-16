@@ -30,8 +30,8 @@ jobs:
     
     env:
       SubscriptionId: ${{ github.event.inputs.subscriptionId }}
-      PlatformName: cawatson02
-      AzureRegion: eastus
+      PlatformName: ppdemo02
+      AzureRegion: southcentralus
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -45,7 +45,7 @@ jobs:
       - uses: azure/arm-deploy@v1
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: asdk-${{ env.PlatformName }}
+          resourceGroupName: saas-app-${{ env.PlatformName }}
           template: ./new-tenant.json
           deploymentName: deploy-tenant-${{ env.SubscriptionId }}
           parameters: platform=${{ env.PlatformName }} sqlServerPassword=${{ secrets.SQL_SERVER_PASSWORD }} subscriptionId=${{ env.SubscriptionId }}
