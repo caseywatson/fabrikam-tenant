@@ -30,8 +30,8 @@ jobs:
     
     env:
       SubscriptionId: ${{ github.event.inputs.subscriptionId }}
-      PlatformName: cawatson02
-      AzureRegion: eastus
+      PlatformName: ppdemo02
+      AzureRegion: southcentralus
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -50,12 +50,12 @@ jobs:
             az keyvault secret delete \
               --name "club-db-${{ env.SubscriptionId }}" \
               --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-              --vault-name "asdk-${{ env.PlatformName }}-secrets"
+              --vault-name "saas-app-${{ env.PlatformName }}-secrets"
               
             az sql db delete \
               --name "club-db-${{ env.SubscriptionId }}" \
-              --resource-group "asdk-${{ env.PlatformName }}" \
-              --server "asdk-${{ env.PlatformName }}-sqlserver" \
+              --resource-group "saas-app-${{ env.PlatformName }}" \
+              --server "saas-app-${{ env.PlatformName }}-sqlserver" \
               --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
               --yes
           
