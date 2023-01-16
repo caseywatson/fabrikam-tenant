@@ -50,12 +50,12 @@ jobs:
             az keyvault secret delete \
               --name "club-db-${{ env.SubscriptionId }}" \
               --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-              --vault-name "saas-app-${{ env.PlatformName }}-secrets"
+              --vault-name "saas-${{ env.PlatformName }}-secrets"
               
             az sql db delete \
               --name "club-db-${{ env.SubscriptionId }}" \
               --resource-group "saas-app-${{ env.PlatformName }}" \
-              --server "saas-app-${{ env.PlatformName }}-sqlserver" \
+              --server "saas-${{ env.PlatformName }}-sqlserver" \
               --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
               --yes
           
